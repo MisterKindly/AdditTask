@@ -30,7 +30,7 @@ jobs:
 
           docker exec -d server_cont python3 -m http.server 2122
 
-          sleep 20
+          sleep 50
 
       - name: Dock client
         run: |
