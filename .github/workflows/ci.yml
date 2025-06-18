@@ -28,7 +28,7 @@ jobs:
 
           docker exec server_cont ls -l /
 
-          docker exec -d server_cont python3 -m http.server 2122 --directory /
+          docker exec -d server_cont python3 -m http.server 2122
 
           sleep 5
 
