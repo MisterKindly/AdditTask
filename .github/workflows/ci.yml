@@ -24,16 +24,25 @@ jobs:
           sleep 5
 
           docker exec my_cont apt-get update
-          docker exec my_cont apt-get install -y python3
+          docker exec my_cont apt-get install -y python3 wget
 
           docker exec -d my_cont python3 -m http.server 2122
 
-          docker exec my_cont ps aux | grep http.server
+          docker exec my_cont wget http://172.18.0.22:2122 -0 index.html
 
-      - name: Test conn
+          docker cp my_cont:/index.html .
+
+      - name: Save artifact
         run: |
-          ping -c 3 172.18.0.22
-          nc -zv 172.18.0.22 2122 || echo "Port test faild"
+          mkdir -p artifacts
+          mv index.html artifacts/
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+         name: homepage
+         path: artifact/index.html
+
 
       - name: Clean
         if: always()
