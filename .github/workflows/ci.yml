@@ -64,7 +64,7 @@ jobs:
           mkdir -p artifacts
           docker cp server_cont:/index.html artifacts/
           mv index_dock2.html artifacts/
-          mv index_runner.txt artifacts/
+          mv index_runner.html artifacts/
 
 
       - name: Upload artifact
