@@ -12,7 +12,7 @@ jobs:
       - name: Create Docker net
         run: docker network create --subnet=172.18.0.0/16 mynet
 
-      - name: Run cont
+      - name: Run Pyth serv
         run: |
           docker run -d \
             --name my_cont \
@@ -22,6 +22,13 @@ jobs:
             ubuntu sleep infinity
 
           sleep 5
+
+          docker exec my_cont apt-get update
+          docker exec my_cont apt-get install -y python3
+
+          docker exec -d my_cont python3 -m http.server 2122
+
+          docker exec my_cont ps aux | grep http.server
 
       - name: Test conn
         run: |
