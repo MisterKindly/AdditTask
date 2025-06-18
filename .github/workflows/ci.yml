@@ -1,0 +1,19 @@
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    services:
+      my_container:
+        image: ubuntu
+        ports:
+          - 2122:2122
+        options: >-
+          --network mynet
+          --ip 172.18.0.22
+    steps:
+      - name: Setup network
+        run: |
+          docker network create --subnet=172.18.0.0/16 mynet
+
+      - name: Test SSH
+        run: |
+          ssh user@my_container -p 2122 echo "Success!"
