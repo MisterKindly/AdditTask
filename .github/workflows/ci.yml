@@ -38,7 +38,7 @@ jobs:
             -v $(pwd):/output \
             --network mynet \
             ubuntu \
-            bash -c "apt-get update && apt-get install -y wget && wget -O http://172.18.0.22:2122/" >index_dock2.html
+            bash -c "apt-get update && apt-get install -y wget && wget -O /output/index_dock2.html  http://172.18.0.22:2122/"
 
       - name: Download from runner
         run: |
