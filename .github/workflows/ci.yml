@@ -26,7 +26,7 @@ jobs:
           docker exec my_cont apt-get update
           docker exec my_cont apt-get install -y python3 wget
 
-          docker exec -d my_cont python3 -m http.server 2122
+          docker exec -d my_cont python3 -m http.server 2122 --directory /
 
           sleep 5
 
