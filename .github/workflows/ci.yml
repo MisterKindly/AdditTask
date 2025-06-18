@@ -8,19 +8,34 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    services:
-      my_container:
-        image: ubuntu
-        ports:
-          - 2122:2122
-        options: >-
-          --network mynet
-          --ip 172.18.0.22
     steps:
-      - name: Setup network
-        run: |
-          docker network create --subnet=172.18.0.0/16 mynet
+      - name: Create Docker net
+        run: docker nework create -- subnet=172.17.0.0/16 mynet
 
-      - name: Test SSH
+      - name: Reun cont
         run: |
-          ssh user@my_container -p 2122 echo "Success!"
+          docker run -d \
+            -- name my_cont \
+            --network mynet \
+            --ip 172.17.00.22 \
+            -p 2122:2122 \
+            ubuntu sleep infinity
+
+          sleep 5
+
+      - name: Verify IP
+        run: |
+          docker inspect my_cont | grep IPaddress
+          docker exec my_cont ip addr show eth0
+
+      - name: Test conn
+        run: |
+          ping -c 3 172.17.0.22
+          nc -zv 172.18.0.22 2122 || echo "Port test faild"
+
+      - name: Clean
+        if: always()
+        run: |
+          docker stop my_cont || true
+          docker rm my_cont || true
+          docker network rm mynet || true
