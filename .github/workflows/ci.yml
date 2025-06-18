@@ -1,3 +1,10 @@
+name: Docker Static IP
+
+on:
+  push:
+    branches:
+      - main
+
 jobs:
   build:
     runs-on: ubuntu-latest
