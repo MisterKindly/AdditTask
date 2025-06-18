@@ -15,7 +15,7 @@ jobs:
       - name: Run Pyth serv
         run: |
           docker run -d \
-            --name my_cont \
+            --name server_cont \
             --network mynet \
             --ip 172.18.0.22 \
             -p 2122:2122 \
@@ -23,34 +23,61 @@ jobs:
 
           sleep 5
 
-          docker exec my_cont apt-get update
-          docker exec my_cont apt-get install -y python3 wget
+          docker exec server_cont apt-get update
+          docker exec server_cont apt-get install -y python3 wget
 
-          docker exec my_cont ls -l /
+          docker exec server_cont ls -l /
 
-          docker exec -d my_cont python3 -m http.server 2122 --directory /
+          docker exec -d server_cont python3 -m http.server 2122 --directory /
 
           sleep 5
 
-          docker exec my_cont wget --content-on-error -O index.html http://172.18.0.22:2122/
+          docker exec server_cont wget --content-on-error -O index.html http://172.18.0.22:2122/
 
-          docker cp my_cont:/index.html .
+          docker cp server_cont:/index.html .
+
+      - name: Dock client
+        run: |
+          docker run -d \
+            --name client_cont \
+            --network mynet \
+            ubuntu sleep infinity
+
+          sleep 2
+
+          docker exec client_cont apt-get update
+          docker exec client_cont apt-get install -y wget
+
+          docker exec client_cont wget http://172.18.0.22:2122/ -O /index_dock2.html
+
+          docker cp client_cont:/index_dock2.html .
+
+          docker stop client_cont
+          docker rm client_cont
+
+      - name: Download from runner
+        run: |
+          wget http://localhost:2122/ -O index_runner.html
+          echo "runner" | cat - runner.txt > index_runner.html
 
       - name: Save artifact
         run: |
           mkdir -p artifacts
-          mv index.html artifacts/
+          docker cp server_cont:/index.html artifacts/
+          mv index_dock2.html artifacts/
+          mv index_runner.txt artifacts/
+
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
          name: homepage
-         path: artifacts/index.html
+         path: artifacts/
 
 
       - name: Clean
         if: always()
         run: |
-          docker stop my_cont || true
-          docker rm my_cont || true
+          docker stop server_cont || true
+          docker rm server_cont || true
           docker network rm mynet || true
