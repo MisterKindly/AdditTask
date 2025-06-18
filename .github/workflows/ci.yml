@@ -58,7 +58,6 @@ jobs:
       - name: Download from runner
         run: |
           wget http://localhost:2122/ -O index_runner.html
-          echo "runner" | cat - runner.txt > index_runner.html
 
       - name: Save artifact
         run: |
