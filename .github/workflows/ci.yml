@@ -23,11 +23,6 @@ jobs:
 
           sleep 5
 
-      - name: Verify IP
-        run: |
-          docker inspect my_cont | grep IPAddress
-          docker exec my_cont ip addr show eth0
-
       - name: Test conn
         run: |
           ping -c 3 172.18.0.22
