@@ -10,12 +10,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Create Docker net
-        run: docker nework create -- subnet=172.17.0.0/16 mynet
+        run: docker network create -- subnet=172.17.0.0/16 mynet
 
-      - name: Reun cont
+      - name: Run cont
         run: |
           docker run -d \
-            -- name my_cont \
+            --name my_cont \
             --network mynet \
             --ip 172.17.00.22 \
             -p 2122:2122 \
@@ -31,7 +31,7 @@ jobs:
       - name: Test conn
         run: |
           ping -c 3 172.17.0.22
-          nc -zv 172.18.0.22 2122 || echo "Port test faild"
+          nc -zv 172.17.0.22 2122 || echo "Port test faild"
 
       - name: Clean
         if: always()
