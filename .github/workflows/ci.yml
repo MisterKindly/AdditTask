@@ -21,7 +21,7 @@ jobs:
             -p 2122:2122 \
             ubuntu sleep infinity
 
-          sleep 5
+          sleep 10
 
           docker exec server_cont apt-get update
           docker exec server_cont apt-get install -y python3 wget
@@ -30,30 +30,16 @@ jobs:
 
           docker exec -d server_cont python3 -m http.server 2122
 
-          sleep 5
-
-          docker exec server_cont wget --content-on-error -O index.html http://172.18.0.22:2122/
-
-          docker cp server_cont:/index.html .
+          sleep 20
 
       - name: Dock client
         run: |
           docker run -d \
             --name client_cont \
             --network mynet \
-            ubuntu sleep infinity
+            ubuntu bash -c "apt-get update && apt-get install -y whet && wget -O http://172.18.0.22:2122" >index_dock2.html
 
-          sleep 2
-
-          docker exec client_cont apt-get update
-          docker exec client_cont apt-get install -y wget
-
-          docker exec client_cont wget http://172.18.0.22:2122/ -O /index_dock2.html
-
-          docker cp client_cont:/index_dock2.html .
-
-          docker stop client_cont
-          docker rm client_cont
+            head -c 500 index_dock2.html
 
       - name: Download from runner
         run: |
@@ -62,7 +48,7 @@ jobs:
       - name: Save artifact
         run: |
           mkdir -p artifacts
-          docker cp server_cont:/index.html artifacts/
+
           mv index_dock2.html artifacts/
           mv index_runner.html artifacts/
 
