@@ -25,7 +25,7 @@ jobs:
 
       - name: Verify IP
         run: |
-          docker inspect my_cont | grep IPaddress
+          docker inspect my_cont | grep IPAddress
           docker exec my_cont ip addr show eth0
 
       - name: Test conn
