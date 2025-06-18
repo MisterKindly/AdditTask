@@ -34,12 +34,11 @@ jobs:
 
       - name: Dock client
         run: |
-          docker run -d \
-            --name client_cont \
+          docker run --rm \
+            -v $(pwd):/output \
             --network mynet \
-            ubuntu bash -c "apt-get update && apt-get install -y wget && wget -O http://172.18.0.22:2122" >index_dock2.html
-
-            head -c 500 index_dock2.html
+            ubuntu \
+            bash -c "apt-get update && apt-get install -y wget && wget -O http://172.18.0.22:2122/" >index_dock2.html
 
       - name: Download from runner
         run: |
