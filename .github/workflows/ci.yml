@@ -41,7 +41,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
          name: homepage
-         path: artifact/index.html
+         path: artifacts/index.html
 
 
       - name: Clean
