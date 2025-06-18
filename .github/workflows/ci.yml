@@ -28,6 +28,8 @@ jobs:
 
           docker exec -d my_cont python3 -m http.server 2122
 
+          sleep 5
+
           docker exec my_cont wget http://172.18.0.22:2122 -O index.html
 
           docker cp my_cont:/index.html .
